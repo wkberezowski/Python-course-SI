@@ -17,4 +17,3 @@ def selectionSort(numbersToSort):
                 currentMax = j
         numbersToSort[currentMax], numbersToSort[i] = numbersToSort[i], numbersToSort[currentMax]
     return numbersToSort
-
