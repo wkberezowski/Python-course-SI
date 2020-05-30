@@ -1,0 +1,2 @@
+1. Na oko bliższy rzeczywistemu jest wykres dla danych teraźniejszych. MOVING AVERAGE dobrze się sprawdza w przypadkach gdzie wachania danych są większe, ponieważ większe wtedy są różnice między średnimi. Dokładniejsze będą modele, które powstały z bardziej różnorodnych danych niż te z mniej różnorodnych. 
+2. Im okres dluższy tym symulacja powinna być dokładniejsza, ponieważ model ma więcej danych do uczenia. Oprócz tego model wykrozystuje okno czasowe. Im okno mniejsze tym dokładniejsze odwzorowanie rzeczywistości przez model. 
