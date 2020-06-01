@@ -1,14 +1,14 @@
 import requests
 import datetime
 import time
-import numpy as np
-import matplotlib.pyplot as plt
 import statistics
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def get_data(crypto):
     now = time.time()
-    date = input("Enter date (YYYY-MM-DD): ")
+    date = "2020-05-01"
     date_timestamp = time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d").timetuple())
     crypto = requests.get(
         "https://poloniex.com/public?command=returnChartData&currencyPair=BTC_{}&start={}&end={}&period=14400".format(
@@ -17,31 +17,20 @@ def get_data(crypto):
 
 
 def model(crypto):
-    times = []
     volumes = []
     for item in crypto:
-        times.append(datetime.datetime.fromtimestamp(int(item["date"])).strftime("%Y-%m-%d %H:%M:%S"))
         volumes.append(item['volume'])
 
-    model_time = times.copy()
-    model_time.append('00:00')
-
-    exp_smoothing = np.zeros(len(volumes) + 1)
-    exp_smoothing[0] = volumes[0]
-    exp_smoothing[1] = volumes[1]
-
-    alpha = float(input("Enter the alpha value [0, 1]. The higher the better: "))
-
-    for i in range(2, len(model_time)):
-        exp_smoothing[i] = alpha * volumes[i - 1] + (1 - alpha) * exp_smoothing[i - 1]
+    window_size = 3
+    numbers_series = pd.Series(volumes)
+    windows = numbers_series.rolling(window_size)
+    moving_averages = windows.mean()
 
     plt.figure(figsize=(15, 5))
-    plt.plot(times, volumes, '-ro', label='Crypto')
-    plt.plot(model_time, exp_smoothing, '-go', label="Prediction")
-    plt.xticks(times, rotation='vertical')
-    plt.ylabel("Volume")
+    plt.plot(volumes, '-m', label='crypto')
+    plt.plot(moving_averages, '-b', label='simulation')
+    plt.xlabel("Number of days")
     plt.legend()
-    plt.title("Volume prediction")
     plt.show()
 
 
@@ -74,3 +63,10 @@ def stats(crypto):
           "Standard deviation: {}, {}".format(round(growth_mean, 2), round(decline_mean, 2),
                                               round(growth_median, 2), round(decline_median, 2),
                                               round(st_dev_growth, 2), round(st_dev_decline, 2)))
+
+
+name = input("Choose your crypto (ETC, DASH, XMR): ").upper()
+
+crypto = get_data(name)
+model(crypto)
+stats(crypto)
