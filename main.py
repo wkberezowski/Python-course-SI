@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 def get_data(crypto):
     now = time.time()
-    date = "2020-05-01"
+    date = input("Enter date (YYYY-MM-DD): ")
     date_timestamp = time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d").timetuple())
     crypto = requests.get(
         "https://poloniex.com/public?command=returnChartData&currencyPair=BTC_{}&start={}&end={}&period=14400".format(
@@ -18,6 +18,7 @@ def get_data(crypto):
 
 def model(crypto):
     volumes = []
+
     for item in crypto:
         volumes.append(item['volume'])
 
@@ -26,11 +27,13 @@ def model(crypto):
     windows = numbers_series.rolling(window_size)
     moving_averages = windows.mean()
 
+    size = int(len(volumes) * 0.6)
+
     plt.figure(figsize=(15, 5))
-    plt.plot(volumes, '-m', label='crypto')
-    plt.plot(moving_averages, '-b', label='simulation')
-    plt.xlabel("Number of days")
+    plt.plot(volumes[:size], label='Crypto')
+    plt.plot(moving_averages[size:], label='Simulation')
     plt.legend()
+    plt.title("Prediction")
     plt.show()
 
 
@@ -67,6 +70,9 @@ def stats(crypto):
 
 name = input("Choose your crypto (ETC, DASH, XMR): ").upper()
 
-crypto = get_data(name)
-model(crypto)
-stats(crypto)
+if name in ["ETC", "DASH", "XMR"]:
+    crypto = get_data(name)
+    model(crypto)
+    stats(crypto)
+else:
+    print("Wrong input")
