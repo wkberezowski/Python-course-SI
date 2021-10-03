@@ -2,7 +2,7 @@
 ## My first ever assignments in Python. Every list is on diffrent branch.
 ## Technologies:
 * Python 
-* Python libraies
+* Python libraies:
   * matplotlib
   * pandas
   * statistics
